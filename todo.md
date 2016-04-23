@@ -11,3 +11,4 @@
   * build arguments
 * Github & docker hub publication
 * Readme edition
+* Path and optimizing image
