@@ -20,11 +20,22 @@
 
 set -e
 
+#===================================================================
+# Constants declaration
+#===================================================================
+
+readonly DEFAULT_JVM_XMX="1024"
+
+#===================================================================
+# Functions declaration
+#===================================================================
+
 # Copy files from /usr/share/jenkins/ref into $JENKINS_HOME
 # So the initial JENKINS-HOME is set with expected content.
 # Don't override, as this is just a reference setup, and use from UI
 # can then change this, upgrade plugins, etc.
-copy_reference_file() {
+copy_reference_file()
+{
     f="${1%/}"
     b="${f%.override}"
     echo "$f" >> "$COPY_REFERENCE_FILE_LOG"
@@ -36,28 +47,51 @@ copy_reference_file() {
         echo "copy $rel to JENKINS_HOME" >> "$COPY_REFERENCE_FILE_LOG"
         mkdir -p "$JENKINS_HOME/${dir:23}"
         cp -r "${f}" "$JENKINS_HOME/${rel}";
-        # pin plugins on initial copy
-        [[ ${rel} == plugins/*.jpi ]] && touch "$JENKINS_HOME/${rel}.pinned"
     fi;
 }
+
+
+# Update iapf (initial admin password file) in case of first setup
+update_iapf()
+{
+  if [[ -e /tmp/iapf ]]; then
+    mkdir -p "${JENKINS_HOME}/secrets"
+    mv /tmp/iapf "${JENKINS_HOME}/secrets/iapf"
+  fi
+}
+
+copy_reference_configuration()
+{
+  touch "${COPY_REFERENCE_FILE_LOG}" || (echo "Can not write to ${COPY_REFERENCE_FILE_LOG}. Wrong volume permissions?" && exit 1)
+  echo "--- Copying files at $(date)" >> "$COPY_REFERENCE_FILE_LOG"
+  find /usr/share/jenkins/ref/ -type f -exec bash -c "copy_reference_file '{}'" \;
+}
+
+# Limit the maximum heap size of jenkins JVM if not directly set through launch args
+limit_jvm_memory()
+{
+  if [[ "${JAVA_OPTS}" != *"-Xmx"* ]]; then
+    export JAVA_OPTS="${JAVA_OPTS} -Xms$((DEFAULT_JVM_XMX/2))M -Xmx${DEFAULT_JVM_XMX}M"
+  fi
+}
+
+
+#===================================================================
+# Main part
+#===================================================================
 
 : ${JENKINS_HOME:="/var/jenkins_home"}
 
 export -f copy_reference_file
 
-touch "${COPY_REFERENCE_FILE_LOG}" || (echo "Can not write to ${COPY_REFERENCE_FILE_LOG}. Wrong volume permissions?" && exit 1)
-echo "--- Copying files at $(date)" >> "$COPY_REFERENCE_FILE_LOG"
-find /usr/share/jenkins/ref/ -type f -exec bash -c "copy_reference_file '{}'" \;
-
-if [[ -e /tmp/iapf ]]; then
-  mkdir -p "${JENKINS_HOME}/secrets"
-  mv /tmp/iapf "${JENKINS_HOME}/secrets/iapf"
-fi
-
 # if `docker run` first argument start with `--` the user is passing jenkins launcher arguments
 if [[ $# -lt 1 ]] || [[ "$1" == "--"* ]]; then
-  # Move jenkins related actions here
-  eval "exec java $JVM_HEAP_SIZE $JAVA_OPTS -jar /usr/share/jenkins/jenkins.war $JENKINS_OPTS \"\$@\""
+  copy_reference_configuration
+  update_iapf
+  limit_jvm_memory
+  export JAVA_OPTS="${JAVA_OPTS} -Djava.util.logging.config.file=/var/jenkins_home/logging.properties"
+  echo $JAVA_OPTS
+  eval "exec java ${JAVA_OPTS} ${SETUP_OPTS} -jar /usr/share/jenkins/jenkins.war $JENKINS_OPTS \"\$@\""
 fi
 
 # As argument is not jenkins, assume user want to run his own process, for sample a `bash` shell to explore this image

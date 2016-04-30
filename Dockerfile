@@ -83,7 +83,4 @@ RUN echo -n "${JENKINS_ADMIN_USER}:${JENKINS_ADMIN_PASSWORD}" > /tmp/iapf
 
 COPY init/*.groovy /usr/share/jenkins/ref/init.groovy.d/
 
-ENV JAVA_OPTS -Djenkins.install.runSetupWizard=${RUN_SETUP_WIZARD}
-
-# Handle it properly
-ENV JVM_HEAP_SIZE -Xms512M -Xmx1024M
+ENV SETUP_OPTS -Djenkins.install.runSetupWizard=${RUN_SETUP_WIZARD}
