@@ -4,3 +4,5 @@
 docker-jenkins.sublime-project
 docker-jenkins.sublime-workspace
 tests
+docker-compose.yml
+*.md
