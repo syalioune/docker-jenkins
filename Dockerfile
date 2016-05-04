@@ -8,7 +8,7 @@
 
 FROM jenkinsci/jenkins
 
-MAINTAINER asy<sy_alioune@yahoo.fr>
+MAINTAINER syalioune<sy_alioune@yahoo.fr>
 
 #=======================================================================
 # Tools installation

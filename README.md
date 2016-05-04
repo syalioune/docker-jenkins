@@ -10,7 +10,7 @@ It is derived from [Jenkins official image](https://github.com/jenkinsci/docker)
 * Jenkins launch
 
   ```
-  docker run -d -p 8080:8080 -p 50000:50000 -v /var/jenkins_home:HOST_DIRECTORY asy/jenkins
+  docker run -d -p 8080:8080 -p 50000:50000 -v /var/jenkins_home:HOST_DIRECTORY syalioune/jenkins
   ```
 
 The port 5000 is used to attach build slaves on the master host. Make sure that **HOST_DIRECTORY** is accessible to the jenkins user on container (uid : 1000 & gid : 1000).
@@ -18,20 +18,20 @@ The port 5000 is used to attach build slaves on the master host. Make sure that 
 * Jenkins launch with parameters
 
   ```
-  docker run -d -p 8080:8080 -p 50000:50000 -v /var/jenkins_home:HOST_DIRECTORY asy/jenkins PARAMETERS
+  docker run -d -p 8080:8080 -p 50000:50000 -v /var/jenkins_home:HOST_DIRECTORY syalioune/jenkins PARAMETERS
   ```
 
   The **PARAMETERS** should start with double dash (--).
   Please note that those parameters can also be passed through the **JENKINS_OPTS** environment variable
 
   ```
-  docker run -d -p 8080:8080 -p 50000:50000 -v /var/jenkins_home:HOST_DIRECTORY asy/jenkins --env JENKINS_OPTS=PARAMETERS
+  docker run -d -p 8080:8080 -p 50000:50000 -v /var/jenkins_home:HOST_DIRECTORY syalioune/jenkins --env JENKINS_OPTS=PARAMETERS
   ```
 
 * Arbitrary command execution
 
   ```
-  docker run -d -p 8080:8080 -p 50000:50000 -v /var/jenkins_home:HOST_DIRECTORY asy/jenkins COMMAND
+  docker run -d -p 8080:8080 -p 50000:50000 -v /var/jenkins_home:HOST_DIRECTORY syalioune/jenkins COMMAND
   ```
 
 ### JVM parameters setup
@@ -39,7 +39,7 @@ The port 5000 is used to attach build slaves on the master host. Make sure that 
 You can pass some parameters to Jenkins JVM through the **JAVA_OPTS** environment variable.
 
 ```
-docker run -d -p 8080:8080 -p 50000:50000 -v /var/jenkins_home:HOST_DIRECTORY asy/jenkins --env JAVA_OPTS=PARAMETERS
+docker run -d -p 8080:8080 -p 50000:50000 -v /var/jenkins_home:HOST_DIRECTORY syalioune/jenkins --env JAVA_OPTS=PARAMETERS
 ```
 
 If not explicitly set on Jenkins launch, the JVM heap size is automatically constrained by the entrypoint script in order to limit the jenkins memory footprint on the host. The default limits are
@@ -62,7 +62,7 @@ Those tools are already configured within Jenkins.
 
 ### Plugins
 
-This image is built using a *personal* list of must have plugins. Those plugins can be found [here](https://github.com/asy/docker-jenkins/ref/plugins.txt).
+This image is built using a *personal* list of must have plugins. Those plugins can be found [here](ref/plugins.txt).
 Plugins dependencies are also automatically downloaded with the latest version and finally the downloaded plugins are not [pinned](https://wiki.jenkins-ci.org/display/JENKINS/Pinned+Plugins) allowing for easier updates.
 
 ### Administration & security
@@ -78,7 +78,7 @@ password=admin
 
 Starting from [Jenkins 2.0](https://jenkins.io/2.0/), the users are now presented with a setup wizard on first run to ease the customization of Jenkins. The main purposes of this setup is to help with plugins selection and security configuration. Since those are already automatically covered, the setup wizard is bypassed (this default can be overrided).
 
-Jenkins CSP is also setup as below in [security.groovy](https://github.com/asy/docker-jenkins/init/security.groovy)
+Jenkins CSP is also setup as below in [security.groovy](init/security.groovy)
 
 ```
 default-src 'none'; img-src 'self'; style-src 'self' 'unsafe inline'; child-src 'self'; frame-src 'self'; script-src 'unsafe-inline'
@@ -99,7 +99,7 @@ You must override the dockerfile variables ORACLE\_JDK8\_PATCH\_VERSION and ORAC
 ```
 mkdir -p #workdir#
 cd #workdir#
-git clone https://github.com/asy/docker-jenkins.git
+git clone https://github.com/syalioune/docker-jenkins.git
 cd docker-jenkins
 docker build --build-arg ORACLE_JDK8_PATCH_VERSION=#PATCH_VERSION# --build-arg ORACLE_JDK8_MD5=#PATCH_VERSION_MD5# -t #TAG_NAME# .
 ```
@@ -111,7 +111,7 @@ You must override the dockerfile variables MAVEN\_VERSION and MAVEN\_MD5 in orde
 ```
 mkdir -p #workdir#
 cd #workdir#
-git clone https://github.com/asy/docker-jenkins.git
+git clone https://github.com/syalioune/docker-jenkins.git
 cd docker-jenkins
 docker build --build-arg MAVEN_VERSION=#MAVEN_VERSION# --build-arg MAVEN_MD5=#MAVEN_MD5# -t #TAG_NAME# .
 ```
@@ -123,14 +123,14 @@ You must override the dockerfile variables RUN\_SETUP\_WIZARD, JENKINS\_ADMIN\_U
 ```
 mkdir -p #workdir#
 cd #workdir#
-git clone https://github.com/asy/docker-jenkins.git
+git clone https://github.com/syalioune/docker-jenkins.git
 cd docker-jenkins
 docker build --build-arg RUN_SETUP_WIZARD=#true|false# --build-arg JENKINS_ADMIN_USER=#USER# --build-arg JENKINS_ADMIN_PASSWORD=#PASSWORD# -t #TAG_NAME# .
 ```
 
 ## Tests
 
-In order to run the delivery pipeline defined in [Jenkinsfile](https://github.com/asy/docker-jenkins/Jenkinsfile), a build slave with the following requirements is needed :
+In order to run the delivery pipeline defined in [Jenkinsfile](Jenkinsfile), a build slave with the following requirements is needed :
 
 * Tools
   * [Bats](https://github.com/sstephenson/bats) for shell unit tests
@@ -138,4 +138,4 @@ In order to run the delivery pipeline defined in [Jenkinsfile](https://github.co
   * Docker client & daemon
 * Label : docker-jenkins-slave
 
-Those requirements can be met using the provided [Dockerfile](https://github.com/asy/docker-jenkins/tests/image/Jenkinsfile) and Jenkins [Docker](https://wiki.jenkins-ci.org/display/JENKINS/Docker+Plugin) plugin.
+Those requirements can be met using the provided [Dockerfile](tests/image/Jenkinsfile) and Jenkins [Docker](https://wiki.jenkins-ci.org/display/JENKINS/Docker+Plugin) plugin.
