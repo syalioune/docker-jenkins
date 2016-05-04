@@ -15,8 +15,8 @@
 
 readonly IMAGE_NAME="syalioune-jenkins"
 readonly CONTAINER_NAME="syalioune-jenkins"
-readonly MAVEN_TEST_VERSION=3.3.3
-readonly MAVEN_TEST_MD5=794b3b7961200c542a7292682d21ba36
+readonly MAVEN_TEST_VERSION=3.3.9
+readonly MAVEN_TEST_MD5=516923b3955b6035ba6b0a5b031fbd8b
 readonly JENKINS_ADMIN_USER=admin
 readonly JENKINS_ADMIN_PASSWORD=admin
 

@@ -8,7 +8,7 @@
 
 FROM tehranian/dind-jenkins-slave
 
-MAINTAINER asy<sy_alioune@yahoo.fr>
+MAINTAINER syalioune<sy_alioune@yahoo.fr>
 
 #=======================================================================
 # Tools installation
@@ -29,7 +29,3 @@ RUN mkdir -p /opt/ \
     && git clone https://github.com/sstephenson/bats.git \
     && cd bats \
     && ./install.sh /usr
-
-# Volume
-
-VOLUME /var/data
