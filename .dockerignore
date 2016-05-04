@@ -1,0 +1,9 @@
+.git
+.editorconfig
+.gitignore
+docker-jenkins.sublime-project
+docker-jenkins.sublime-workspace
+tests
+docker-compose.yml
+Jenkinsfile
+*.md
