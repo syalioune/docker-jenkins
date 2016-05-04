@@ -130,4 +130,12 @@ docker build --build-arg RUN_SETUP_WIZARD=#true|false# --build-arg JENKINS_ADMIN
 
 ## Tests
 
-TODO
+In order to run the delivery pipeline defined in [Jenkinsfile](https://github.com/asy/docker-jenkins/Jenkinsfile), a build slave with the following requirements is needed :
+
+* Tools
+  * [Bats](https://github.com/sstephenson/bats) for shell unit tests
+  * [Shellcheck](https://github.com/koalaman/shellcheck) for static code analysis
+  * Docker client & daemon
+* Label : docker-jenkins-slave
+
+Those requirements can be met using the provided [Dockerfile](https://github.com/asy/docker-jenkins/tests/image/Jenkinsfile) and Jenkins [Docker](https://wiki.jenkins-ci.org/display/JENKINS/Docker+Plugin) plugin.

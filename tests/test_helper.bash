@@ -11,6 +11,7 @@ function assert {
   shift
   local real=$1
   real=${real//[$'\t\r\n']}
+  echo "${expected}#${real}" >> ${BATS_TEST_DIRNAME}/check.log
   [ "${expected}" = "${real}" ]
 }
 
@@ -61,7 +62,4 @@ function test_url {
 function cleanup {
     docker kill "$1" &>/dev/null ||:
     docker rm -fv "$1" &>/dev/null ||:
-    if [[ -n "$2" ]]; then
-      docker rmi -f "$2" &>/dev/null ||:
-    fi
 }

@@ -1,11 +1,8 @@
 # TODO
 
-* Test automation
-  * Docker image for jenkins slave
-  * Jenkins file creation
-* Github & docker hub publication
-* Readme edition ~
-  * expliquer le fonctionnement des reseaux
-* Path and optimizing image
-  * pourquoi ne pas utiliser openjdk ?
+* docker hub image description
+* Image optimization :
+  * Are tools really helpful if docker plugin is used for slaves ? Time will tell :-)
+  * Why not using openjdk ?
+* jenkins security agent to master security
 

@@ -90,7 +90,6 @@ if [[ $# -lt 1 ]] || [[ "$1" == "--"* ]]; then
   update_iapf
   limit_jvm_memory
   export JAVA_OPTS="${JAVA_OPTS} -Djava.util.logging.config.file=/var/jenkins_home/logging.properties"
-  echo $JAVA_OPTS
   eval "exec java ${JAVA_OPTS} ${SETUP_OPTS} -jar /usr/share/jenkins/jenkins.war $JENKINS_OPTS \"\$@\""
 fi
 
